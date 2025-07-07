@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define DELIMITER ","
+
 struct Address *create_address_from_line(char *line)
 {
 	char *name;
@@ -9,10 +11,10 @@ struct Address *create_address_from_line(char *line)
 	char *email;
 	char *phone;
 
-	name	= strtok(line, delimiter);
-	surname = strtok(NULL, delimiter);
-	email	= strtok(NULL, delimiter);
-	phone	= strtok(NULL, delimiter);
+	name	= strtok(line, DELIMITER);
+	surname = strtok(NULL, DELIMITER);
+	email	= strtok(NULL, DELIMITER);
+	phone	= strtok(NULL, DELIMITER);
 
 	// Ensure we're not leaving trailing whitespace in the phone number
 	int phonelen = strlen(phone);

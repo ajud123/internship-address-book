@@ -6,8 +6,6 @@ struct Address {
 	struct Address *next;
 };
 
-static char delimiter[1]  = {','};
-
 struct Address *create_address_from_line(char *line);
 struct Address *create_address(char *name, char *surname, char *email, char *phone);
 void add_to_list(struct Address **list, struct Address *address);

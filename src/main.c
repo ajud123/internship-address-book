@@ -4,21 +4,21 @@
 #include "linkedlist.h"
 #include "utils.h"
 
-#define READ_INPUT(msg, buf)                                                                                 \
+#define READ_INPUT(msg, buf)                                                                                \
 	do {                                                                                                 \
 		printf(msg);                                                                                 \
-		fscanf(stdin, "%[^\n]%*c", buf);                                                             \
+		fgets(buf, sizeof(buf), stdin);                                                              \
+		int len = strlen(buf);                                                                       \
+		if (len == 1)                                                                                \
+			buf[len - 1] = '-';                                                                  \
 	} while (0)
 
 int parse_input(struct Address **addrBook, char *input);
 
 int main()
 {
-	char filename[256];
-	strncpy(filename, getenv("HOME"), 256);
-	strncat(filename, "/addresses.csv", 15);
 	struct Address *book;
-	book = read_address_book(filename);
+	book = read_address_book();
 	while (1) {
 		printf("\033c");
 		printf("Select the desired action:\n");
@@ -33,13 +33,13 @@ int main()
 		fgets(input, 20, stdin);
 		if (strlen(input) > 2)
 			printf("Unknown command. ");
-                
-                int status = parse_input(&book, input);
-		if(status == 1)
-                        return 0; 
+
+		int status = parse_input(&book, input);
+		if (status == 1)
+			return 0;
 		printf("Press enter key to continue.");
-                if(fgets(input, 20, stdin) == NULL)
-                        return 0;
+		if (fgets(input, 20, stdin) == NULL)
+			return 0;
 	}
 	return 0;
 }
@@ -66,10 +66,12 @@ int parse_input(struct Address **addrBook, char *input)
 		READ_INPUT("Enter the email address of the person to add: ", email);
 		READ_INPUT("Enter the phone number of the person to add: ", phone);
 		struct Address *newAddr = create_address(name, surname, email, phone);
-		if (newAddr == NULL)
+		if (newAddr == NULL) {
 			printf("Could not generate a new address from the given data. \n");
-		else
+		} else {
 			add_to_list(addrBook, newAddr);
+			dump_address_book(*addrBook);
+		}
 		break;
 	}
 	case '3': {
@@ -86,17 +88,19 @@ int parse_input(struct Address **addrBook, char *input)
 		READ_INPUT("Enter the email address of the person to add: ", email);
 		READ_INPUT("Enter the phone number of the person to add: ", phone);
 		struct Address *newAddr = create_address(name, surname, email, phone);
-		if (newAddr == NULL)
+		if (newAddr == NULL) {
 			printf("Could not generate a new address from the given data. \n");
-		else
+		} else {
 			insert_in_list_index(addrBook, newAddr, i);
+			dump_address_book(*addrBook);
+		}
 		break;
 	}
 	case 'x':
 	case 'X':
-                return 1;
+		return 1;
 	default:
-                break;
+		break;
 	}
-        return 0;
+	return 0;
 }

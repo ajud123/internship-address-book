@@ -1,15 +1,22 @@
 #include "linkedlist.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-struct Address *read_address_book(char *filename)
+struct Address *read_address_book()
 {
+        char filename[256];
+	strncpy(filename, getenv("HOME"), 256);
+	strncat(filename, "/addresses.csv", 15);
 	FILE *f = fopen(filename, "r");
 	if (f == NULL) {
 		return NULL;
 	}
-	struct Address *book;
+	struct Address *book = NULL;
 	char line[30 * 4];
-	while (fgets(line, 30 * 4, f) != NULL) {
+	while (fgets(line, sizeof(line), f) != NULL) {
+                if(strcmp(line, "\n") == 0)
+                        continue;
 		struct Address *address = create_address_from_line(line);
 		if (address != NULL) {
 			add_to_list(&book, address);
@@ -25,13 +32,41 @@ void print_address_book(struct Address *book)
 	if (book == NULL) {
 		printf("The phone book is empty.\n");
 	}
-        int i = 1;
+	int i = 1;
 	while (book != NULL) {
 		printf("%i. %s %s:\n", i, book->name, book->surname);
 		printf("* Email: %s\n", book->email);
 		printf("* Phone: %s\n", book->phone);
 		printf("\n");
 		book = book->next;
-                i++;
+		i++;
 	}
+}
+
+/*
+ * Returns 0 if it succeeds writing the address book to disk.
+ * Returns 1 if it fails to open the address book for writing.
+ * Returns 2 if writing to the address book fails.
+ */
+int dump_address_book(struct Address *book)
+{
+        char filename[256];
+	strncpy(filename, getenv("HOME"), 256);
+	strncat(filename, "/addresses.csv", 15);
+	FILE *f = fopen(filename, "w");
+        if(f == NULL)
+                return 1;
+        while (book != NULL) {
+		if(fprintf(f, "%s,%s,%s,%s\n", book->name, book->surname, book->email, book->phone) < 0){
+                        perror("Failed to write to address book file");
+                        if(fclose(f) == EOF) {
+                                perror("FATAL: Failed to close address book file descriptor");
+                                abort();
+                        }
+                        return 2;
+                }
+		book = book->next;
+	}
+        fclose(f);
+        return 0;
 }

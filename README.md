@@ -34,5 +34,4 @@ The user must be provided with an interactive menu which will be used for the us
 Execute `build.sh` script to generate the address book executable, then simply run it.
 
 ## Issues
-* If submitting an empty value when adding a new address to the book, it skips all other requests
-* Using CTRL+D makes the program bug out, throwing itself into a loop.
+* None that I have found

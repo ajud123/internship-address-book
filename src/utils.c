@@ -27,6 +27,13 @@ struct Address *read_address_book()
 	return book;
 }
 
+void print_single_address(struct Address *address){
+        printf("%s %s:\n", address->name, address->surname);
+        printf("* Email: %s\n", address->email);
+        printf("* Phone: %s\n", address->phone);
+        printf("\n");
+}
+
 void print_address_book(struct Address *book)
 {
 	if (book == NULL) {

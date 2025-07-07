@@ -8,5 +8,6 @@ struct Address {
 
 struct Address *create_address_from_line(char *line);
 struct Address *create_address(char *name, char *surname, char *email, char *phone);
+int get_address_at_index(struct Address **list, struct Address **address, int index);
 void add_to_list(struct Address **list, struct Address *address);
 void insert_in_list_index(struct Address **list, struct Address *address, int index);

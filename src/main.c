@@ -4,7 +4,7 @@
 #include "linkedlist.h"
 #include "utils.h"
 
-#define READ_INPUT(msg, buf)                                                                                \
+#define READ_INPUT(msg, buf)                                                                                 \
 	do {                                                                                                 \
 		printf(msg);                                                                                 \
 		fgets(buf, sizeof(buf), stdin);                                                              \
@@ -25,6 +25,7 @@ int main()
 		printf("1) Display all records in the address book.\n");
 		printf("2) Add a new address to the book (at the end).\n");
 		printf("3) Insert a new address to the book at a position.\n");
+		printf("4) Delete an address from the book at a position.\n");
 		printf("X) Exit.\n");
 
 		char input[20];
@@ -42,6 +43,10 @@ int main()
 			return 0;
 	}
 	return 0;
+}
+
+void handle_deletion()
+{
 }
 
 /*
@@ -94,6 +99,20 @@ int parse_input(struct Address **addrBook, char *input)
 			insert_in_list_index(addrBook, newAddr, i);
 			dump_address_book(*addrBook);
 		}
+		break;
+	}
+	case '4': {
+		char position[30];
+                READ_INPUT("Enter the index of the address to delete: ", position);
+                int index = atoi(position);
+                struct Address *foundElement;
+                int status = get_address_at_index(addrBook, &foundElement, index);
+                if (foundElement == NULL) {
+                        printf("No address at index %i\n", index);
+                } else {
+                        /* deletion call */
+                        printf("Deleted element at index %i");
+                }
 		break;
 	}
 	case 'x':

@@ -35,3 +35,6 @@ Execute `build.sh` script to generate the address book executable, then simply r
 
 ## Issues
 * None that I have found
+
+## Notes
+The indexing for the linked list methods starts from 1, simply quicker to associate the user-displayed value in the program.

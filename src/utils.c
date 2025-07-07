@@ -25,11 +25,13 @@ void print_address_book(struct Address *book)
 	if (book == NULL) {
 		printf("The phone book is empty.\n");
 	}
+        int i = 1;
 	while (book != NULL) {
-		printf("%s %s:\n", book->name, book->surname);
+		printf("%i. %s %s:\n", i, book->name, book->surname);
 		printf("* Email: %s\n", book->email);
 		printf("* Phone: %s\n", book->phone);
 		printf("\n");
 		book = book->next;
+                i++;
 	}
 }

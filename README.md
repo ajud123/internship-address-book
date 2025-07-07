@@ -31,6 +31,8 @@ All of your code must be stored in a gitlab repository. Also, you can use other 
 The user must be provided with an interactive menu which will be used for the user to interact with the program and execute different actions. 
 
 ## Running
+Execute `build.sh` script to generate the address book executable, then simply run it.
 
 ## Issues
 * If submitting an empty value when adding a new address to the book, it skips all other requests
+* Using CTRL+D makes the program bug out, throwing itself into a loop.

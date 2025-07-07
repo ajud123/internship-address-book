@@ -45,3 +45,24 @@ void add_to_list(struct Address **list, struct Address *address)
 		current = current->next;
 	current->next = address;
 }
+
+void insert_in_list_index(struct Address **list, struct Address *address, int index)
+{
+        struct Address *current = *list;
+	if (current == NULL) {
+		*list = address;
+		return;
+	}
+        if(index == 1) {
+                address->next = current;
+		*list = address;
+                return;
+        }
+        int i = 1;
+	while (current->next != NULL && i < index-1){
+		current = current->next;
+                i++;
+        }
+        address->next = current->next;
+	current->next = address;
+}

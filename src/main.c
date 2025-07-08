@@ -11,6 +11,8 @@
 		int len = strlen(buf);                                                                       \
 		if (len == 1)                                                                                \
 			buf[len - 1] = '-';                                                                  \
+		else                                                                                         \
+			buf[len - 1] = '\0';                                                                 \
 	} while (0)
 
 int parse_input(struct Address **addrBook, char *input);
@@ -26,6 +28,7 @@ int main()
 		printf("2) Add a new address to the book (at the end).\n");
 		printf("3) Insert a new address to the book at a position.\n");
 		printf("4) Delete an address from the book at a position.\n");
+		printf("5) Delete the entire address book.\n");
 		printf("X) Exit.\n");
 
 		char input[20];
@@ -36,17 +39,21 @@ int main()
 			printf("Unknown command. ");
 
 		int status = parse_input(&book, input);
-		if (status == 1)
+		if (status == 1){
+                        if(book != NULL)
+                                delete_list(&book);
 			return 0;
+                }
 		printf("Press enter key to continue.");
-		if (fgets(input, 20, stdin) == NULL)
-			return 0;
+		if (fgets(input, 20, stdin) == NULL){
+                        if(book != NULL)
+                                delete_list(&book);
+                        return 0;
+                }
 	}
+        if(book != NULL)
+                delete_list(&book);
 	return 0;
-}
-
-void handle_deletion()
-{
 }
 
 /*
@@ -103,15 +110,32 @@ int parse_input(struct Address **addrBook, char *input)
 	}
 	case '4': {
 		char position[30];
-                READ_INPUT("Enter the index of the address to delete: ", position);
-                int index = atoi(position);
-                struct Address *foundElement;
-                int status = get_address_at_index(addrBook, &foundElement, index);
-                if (foundElement == NULL) {
-                        printf("No address at index %i\n", index);
+		READ_INPUT("Enter the index of the address to delete: ", position);
+		int index = atoi(position);
+		if (remove_at_list_index(addrBook, index) == 0) {
+			printf("Deleted element at index %i\n", index);
+			dump_address_book(*addrBook);
+		} else {
+			printf("No address at index %i\n", index);
+		}
+
+		// }
+		break;
+	}
+	case '5': {
+		printf("Are you sure you want to do this? This cannot be undone.\n");
+		char confirm[30];
+                int status = 2;
+                while(status > 1){
+                        READ_INPUT("(y/n): ", confirm);
+                        status = parse_yes_no(confirm);
+                }
+                if(!status){
+                        delete_list(addrBook);
+                        printf("List cleared.\n");
+			dump_address_book(*addrBook);
                 } else {
-                        /* deletion call */
-                        printf("Deleted element at index %i");
+                        printf("Operation aborted.\n");
                 }
 		break;
 	}

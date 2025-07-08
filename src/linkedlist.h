@@ -11,3 +11,5 @@ struct Address *create_address(char *name, char *surname, char *email, char *pho
 int get_address_at_index(struct Address **list, struct Address **address, int index);
 void add_to_list(struct Address **list, struct Address *address);
 void insert_in_list_index(struct Address **list, struct Address *address, int index);
+int remove_at_list_index(struct Address **list, int index);
+void delete_list(struct Address **list);

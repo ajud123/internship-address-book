@@ -22,8 +22,10 @@ struct Address *read_address_book()
 			add_to_list(&book, address);
 		} else {
 			perror("Failed to read address from address book.");
+                        return NULL;
 		}
 	}
+        fclose(f);
 	return book;
 }
 
@@ -76,4 +78,23 @@ int dump_address_book(struct Address *book)
 	}
         fclose(f);
         return 0;
+}
+
+/*
+ * Returns 2 if the input is not "y" or "n" or any other capitalized variation
+ * Returns 0 if the input is "y" or "Y"
+ * Returns 1 if the input is "n" or "N"
+ */
+int parse_yes_no(char *input){
+        if(strlen(input) > 2)
+                return 2;
+        switch(input[0]){
+                case 'Y':
+                case 'y':
+                        return 0;
+                case 'N':
+                case 'n':
+                        return 1;
+        }
+        return 2;
 }

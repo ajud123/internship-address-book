@@ -4,6 +4,13 @@
 
 #define DELIMITER ","
 
+/*
+ * Creates and returns an address struct from a provided CSV line string.
+ * The CSV format is as follows:
+ * `name,surname,email,phone`
+ * The maximum length of any given field cannot exceed 29 characters.
+ * If the length is exceeded, returns NULL.
+ */
 struct Address *create_address_from_line(char *line)
 {
 	char *name;
@@ -16,6 +23,14 @@ struct Address *create_address_from_line(char *line)
 	email	= strtok(NULL, DELIMITER);
 	phone	= strtok(NULL, DELIMITER);
 
+	if (strlen(name) > 29)
+		return NULL;
+	if (strlen(surname) > 29)
+		return NULL;
+	if (strlen(email) > 29)
+		return NULL;
+	if (strlen(phone) > 29)
+		return NULL;
 	// Ensure we're not leaving trailing whitespace in the phone number
 	int phonelen = strlen(phone);
 	if (phone[phonelen - 1] == '\n')
@@ -25,6 +40,9 @@ struct Address *create_address_from_line(char *line)
 	return addr;
 }
 
+/*
+ * Either returns the pointer to the newly created address or segfaults.
+ */
 struct Address *create_address(char *name, char *surname, char *email, char *phone)
 {
 	struct Address *addr = malloc(sizeof(struct Address));
@@ -66,8 +84,8 @@ int get_address_at_index(struct Address **list, struct Address **address, int in
 		*address = NULL;
 		return 2;
 	}
-        *address = NULL;
-        return 3;
+	*address = NULL;
+	return 3;
 }
 
 void add_to_list(struct Address **list, struct Address *address)
@@ -89,6 +107,8 @@ void insert_in_list_index(struct Address **list, struct Address *address, int in
 		*list = address;
 		return;
 	}
+        if(index < 1)
+                index = 1;
 	if (index == 1) {
 		address->next = current;
 		*list	      = address;
@@ -101,4 +121,45 @@ void insert_in_list_index(struct Address **list, struct Address *address, int in
 	}
 	address->next = current->next;
 	current->next = address;
+}
+
+/*
+ * Removes an element at a given list index.
+ * Returns 0 if the element was found and removed.
+ * Returns 1 if the element was not found.
+ */
+int remove_at_list_index(struct Address **list, int index)
+{
+	struct Address *current = *list;
+	if (current == NULL) {
+		return 1;
+	}
+        if(index == 1){
+                struct Address *next = current->next;
+                free(*list);
+                *list = next;
+                return 0;
+        }
+	int i = 1;
+	while (current->next != NULL && i < index - 1) {
+		current = current->next;
+		i++;
+	}
+	if (current->next != NULL && i == index - 1) {
+		struct Address *removed = current->next;
+		current->next		= removed->next;
+		free(removed);
+		return 0;
+	}
+	return 1;
+}
+
+void delete_list(struct Address **list)
+{
+        struct Address *next;
+        while(*list != NULL){
+                next = (*list)->next;
+                free(*list);
+                *list = next;
+        }
 }

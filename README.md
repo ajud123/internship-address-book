@@ -31,7 +31,7 @@ All of your code must be stored in a gitlab repository. Also, you can use other 
 The user must be provided with an interactive menu which will be used for the user to interact with the program and execute different actions. 
 
 ## Running
-Execute `build.sh` script to generate the address book executable, then simply run it.
+Execute `build.sh` script to generate the address book executable, then run generated binary in the generated `bin` folder.
 
 ## Issues
 * None that I have found

@@ -29,6 +29,7 @@ int main()
 		printf("3) Insert a new address to the book at a position.\n");
 		printf("4) Delete an address from the book at a position.\n");
 		printf("5) Delete the entire address book.\n");
+		printf("6) Find address by index.\n");
 		printf("X) Exit.\n");
 
 		char input[20];
@@ -139,6 +140,18 @@ int parse_input(struct Address **addrBook, char *input)
                 }
 		break;
 	}
+        case '6': {
+                char position[30];
+		READ_INPUT("Enter the index of the address you wish to see: ", position);
+		int index = atoi(position);
+                struct Address *address;
+                get_address_at_index(addrBook, &address, index);
+                if(address != NULL)
+                        print_single_address(address);
+                else
+                        printf("Could not find an address at index %i.\n", index);
+                break;
+        }
 	case 'x':
 	case 'X':
 		return 1;

@@ -23,6 +23,14 @@ struct Address *create_address_from_line(char *line)
 	email	= strtok(NULL, DELIMITER);
 	phone	= strtok(NULL, DELIMITER);
 
+        if(name == NULL)
+                return NULL;
+        if(surname == NULL)
+                return NULL;
+        if(email == NULL)
+                return NULL;
+        if(phone == NULL)
+                return NULL;
 	if (strlen(name) > 29)
 		return NULL;
 	if (strlen(surname) > 29)

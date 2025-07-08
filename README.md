@@ -1,4 +1,4 @@
-# Part 2 Address book
+# Part 3 Address book
 
 ## Task
 In this task you will need to create a simple address book using single linked list. You will need to use C programming language. 
@@ -32,9 +32,6 @@ The user must be provided with an interactive menu which will be used for the us
 
 ## Running
 Execute `build.sh` script to generate the address book executable, then run generated binary in the generated `bin` folder.
-
-## Issues
-* None that I have found
 
 ## Notes
 The indexing for the linked list methods starts from 1, simply quicker to associate the user-displayed value in the program.

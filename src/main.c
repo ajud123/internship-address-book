@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
+// #include <unistd.h>
 #include "linkedlist.h"
 #include "utils.h"
 
@@ -18,12 +20,24 @@
 int parse_input(struct Address **addrBook, char *input);
 int perform_search(struct Address **addrBook);
 
+struct Address *book;
+
+void handle_signal()
+{
+        delete_list(&book);
+        exit(0);
+}
+
 int main()
 {
-	struct Address *book;
 	book = read_address_book();
+        signal(SIGINT, handle_signal);
+        signal(SIGQUIT, handle_signal);
+        signal(SIGABRT, handle_signal);
+        signal(SIGTERM, handle_signal);
 	while (1) {
 		printf("\033c");
+                // printf("Process PID: %i\n", getpid());
 		printf("Select the desired action:\n");
 		printf("1) Display all records in the address book.\n");
 		printf("2) Add a new address to the book (at the end).\n");
@@ -169,46 +183,46 @@ int parse_input(struct Address **addrBook, char *input)
 
 int perform_search(struct Address **book)
 {
-        char field[30];
-        printf("Available fields to search by:\n");
-        printf("1) Name\n");
-        printf("2) Surname\n");
-        printf("3) Email\n");
-        printf("4) Phone number\n");
-        int hasField = 0;
-        while(!hasField){
-                READ_INPUT("Enter the field number by which you want to search by: ", field);
-                if(strlen(field) > 2) {
-                        printf("Unknown value. Try again\n");
-                        continue;
-                }
-                switch(field[0]){
-                case '1':
-                        hasField = 1;
-                        break;
-                case '2':
-                        hasField = 2;
-                        break;
-                case '3':
-                        hasField = 3;
-                        break;
-                case '4':
-                        hasField = 4;
-                        break;
-                default:
-                        printf("Unknown value. Try again\n");
-                        break;
-                }
-        }
-        char value[30];
-        READ_INPUT("Enter the field value: ", value);
-        struct Address *element = NULL;
-        int i = get_address_by_value(book, &element, (enum SearchField)hasField, value);
-        if(i > 0){
-                printf("%i) ", i);
-                print_single_address(element);
-        } else {
-                printf("Requested address not found. \n");
-        }
-        return 0;
+	char field[30];
+	printf("Available fields to search by:\n");
+	printf("1) Name\n");
+	printf("2) Surname\n");
+	printf("3) Email\n");
+	printf("4) Phone number\n");
+	int hasField = 0;
+	while (!hasField) {
+		READ_INPUT("Enter the field number by which you want to search by: ", field);
+		if (strlen(field) > 2) {
+			printf("Unknown value. Try again\n");
+			continue;
+		}
+		switch (field[0]) {
+		case '1':
+			hasField = 1;
+			break;
+		case '2':
+			hasField = 2;
+			break;
+		case '3':
+			hasField = 3;
+			break;
+		case '4':
+			hasField = 4;
+			break;
+		default:
+			printf("Unknown value. Try again\n");
+			break;
+		}
+	}
+	char value[30];
+	READ_INPUT("Enter the field value: ", value);
+	struct Address *element = NULL;
+	int i			= get_address_by_value(book, &element, (enum SearchField)hasField, value);
+	if (i > 0) {
+		printf("%i) ", i);
+		print_single_address(element);
+	} else {
+		printf("Requested address not found. \n");
+	}
+	return 0;
 }

@@ -1,3 +1,4 @@
+#include "utils.h"
 #include "linkedlist.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +14,7 @@ struct Address *read_address_book()
 		return NULL;
 	}
 	struct Address *book = NULL;
-	char line[30 * 4];
+	char line[NAME_LEN + SURNAME_LEN + EMAIL_LEN + PHONE_LEN + 4];
 	while (fgets(line, sizeof(line), f) != NULL) {
                 if(strcmp(line, "\n") == 0)
                         continue;
@@ -97,4 +98,22 @@ int parse_yes_no(char *input){
                         return 1;
         }
         return 2;
+}
+
+void clear_input_buffer(){
+        int c;
+        while((c = getchar()) != '\n' && c != EOF);
+}
+
+void read_input(char *msg, char *buf, int size)
+{
+        fputs(msg, stdout);
+	fgets(buf, size, stdin);
+        if(buf[strlen(buf)-1] != '\n')
+                clear_input_buffer();
+	int len = strlen(buf);
+	if (len == 1)
+		buf[len - 1] = '-';
+	else
+		buf[len - 1] = '\0';
 }

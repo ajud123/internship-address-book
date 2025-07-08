@@ -1,4 +1,5 @@
 #include "linkedlist.h"
+#include "options.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -8,8 +9,7 @@
  * Creates and returns an address struct from a provided CSV line string.
  * The CSV format is as follows:
  * `name,surname,email,phone`
- * The maximum length of any given field cannot exceed 29 characters.
- * If the length is exceeded, returns NULL.
+ * If any of the inputs exceed allowed field length, returns NULL.
  */
 struct Address *create_address_from_line(char *line)
 {
@@ -31,13 +31,13 @@ struct Address *create_address_from_line(char *line)
 		return NULL;
 	if (phone == NULL)
 		return NULL;
-	if (strlen(name) > 29)
+	if (strlen(name) > NAME_LEN - 1)
 		return NULL;
-	if (strlen(surname) > 29)
+	if (strlen(surname) > SURNAME_LEN - 1)
 		return NULL;
-	if (strlen(email) > 29)
+	if (strlen(email) > EMAIL_LEN - 1)
 		return NULL;
-	if (strlen(phone) > 29)
+	if (strlen(phone) > PHONE_LEN - 1)
 		return NULL;
 	// Ensure we're not leaving trailing whitespace in the phone number
 	int phonelen = strlen(phone);
@@ -55,10 +55,10 @@ struct Address *create_address(char *name, char *surname, char *email, char *pho
 {
 	struct Address *addr = malloc(sizeof(struct Address));
 	addr->next	     = NULL;
-	strncpy(addr->name, name, 30);
-	strncpy(addr->surname, surname, 30);
-	strncpy(addr->email, email, 30);
-	strncpy(addr->phone, phone, 30);
+	strncpy(addr->name, name, NAME_LEN);
+	strncpy(addr->surname, surname, SURNAME_LEN);
+	strncpy(addr->email, email, EMAIL_LEN);
+	strncpy(addr->phone, phone, PHONE_LEN);
 	return addr;
 }
 
@@ -96,19 +96,12 @@ int get_address_at_index(struct Address **list, struct Address **address, int in
 	return 3;
 }
 
-/*
- * Returns the first occurence of the element that matches the provided value in the given field
- * Returns the element index if it exists and sets *address to the found element
- * Returns -1 if the element does not exist and sets *address to the found element
- * Returns -2 if the address book is empty and sets *address to NULL
- */
-int get_address_by_value(struct Address **list, struct Address **address, enum SearchField field, char *value)
+struct Address *get_addresses_by_value(struct Address **list, enum SearchField field, char *value)
 {
 	struct Address *current = *list;
 	char *location;
 	if (current == NULL) {
-                *address = NULL;
-		return -2;
+		return NULL;
 	}
 	switch (field) {
 	case NAME:
@@ -120,24 +113,25 @@ int get_address_by_value(struct Address **list, struct Address **address, enum S
 	case EMAIL:
 		location = current->email;
 		break;
-        case PHONENUMBER:
-                location = current->phone;
-                break;
+	case PHONENUMBER:
+		location = current->phone;
+		break;
 	}
-        // Pointer arithmetics
-        int offset = (void*)location - (void*)current;
-        int i = 1;
-        while(current != NULL){
-                // Cast to void* otherwise the arithmetics fail
-                if(strcmp((char *)((void*)current+offset), value) == 0){
-                        *address = current;
-                        return i;
-                }
-                current = current->next;
-                i++;
-        }
-        return -1;
-
+	// Pointer arithmetics
+	int offset		      = (void *)location - (void *)current;
+	int i			      = 1;
+	struct Address *foundElements = NULL;
+	while (current != NULL) {
+		// Cast to void* otherwise the arithmetics fail
+		if (strcmp((char *)((void *)current + offset), value) == 0) {
+			struct Address *copy = create_address(current->name, current->surname, current->email,
+							      current->phone);
+			add_to_list(&foundElements,copy);
+		}
+		current = current->next;
+		i++;
+	}
+	return foundElements;
 }
 
 void add_to_list(struct Address **list, struct Address *address)

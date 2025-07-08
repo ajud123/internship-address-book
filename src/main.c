@@ -16,6 +16,7 @@
 	} while (0)
 
 int parse_input(struct Address **addrBook, char *input);
+int perform_search(struct Address **addrBook);
 
 int main()
 {
@@ -30,6 +31,7 @@ int main()
 		printf("4) Delete an address from the book at a position.\n");
 		printf("5) Delete the entire address book.\n");
 		printf("6) Find address by index.\n");
+		printf("7) Find address by name, surname, email or phone number.\n");
 		printf("X) Exit.\n");
 
 		char input[20];
@@ -40,20 +42,20 @@ int main()
 			printf("Unknown command. ");
 
 		int status = parse_input(&book, input);
-		if (status == 1){
-                        if(book != NULL)
-                                delete_list(&book);
+		if (status == 1) {
+			if (book != NULL)
+				delete_list(&book);
 			return 0;
-                }
+		}
 		printf("Press enter key to continue.");
-		if (fgets(input, 20, stdin) == NULL){
-                        if(book != NULL)
-                                delete_list(&book);
-                        return 0;
-                }
+		if (fgets(input, 20, stdin) == NULL) {
+			if (book != NULL)
+				delete_list(&book);
+			return 0;
+		}
 	}
-        if(book != NULL)
-                delete_list(&book);
+	if (book != NULL)
+		delete_list(&book);
 	return 0;
 }
 
@@ -126,32 +128,36 @@ int parse_input(struct Address **addrBook, char *input)
 	case '5': {
 		printf("Are you sure you want to do this? This cannot be undone.\n");
 		char confirm[30];
-                int status = 2;
-                while(status > 1){
-                        READ_INPUT("(y/n): ", confirm);
-                        status = parse_yes_no(confirm);
-                }
-                if(!status){
-                        delete_list(addrBook);
-                        printf("List cleared.\n");
+		int status = 2;
+		while (status > 1) {
+			READ_INPUT("(y/n): ", confirm);
+			status = parse_yes_no(confirm);
+		}
+		if (!status) {
+			delete_list(addrBook);
+			printf("List cleared.\n");
 			dump_address_book(*addrBook);
-                } else {
-                        printf("Operation aborted.\n");
-                }
+		} else {
+			printf("Operation aborted.\n");
+		}
 		break;
 	}
-        case '6': {
-                char position[30];
+	case '6': {
+		char position[30];
 		READ_INPUT("Enter the index of the address you wish to see: ", position);
 		int index = atoi(position);
-                struct Address *address;
-                get_address_at_index(addrBook, &address, index);
-                if(address != NULL)
-                        print_single_address(address);
-                else
-                        printf("Could not find an address at index %i.\n", index);
-                break;
-        }
+		struct Address *address;
+		get_address_at_index(addrBook, &address, index);
+		if (address != NULL)
+			print_single_address(address);
+		else
+			printf("Could not find an address at index %i.\n", index);
+		break;
+	}
+	case '7': {
+		perform_search(addrBook);
+		break;
+	}
 	case 'x':
 	case 'X':
 		return 1;
@@ -159,4 +165,50 @@ int parse_input(struct Address **addrBook, char *input)
 		break;
 	}
 	return 0;
+}
+
+int perform_search(struct Address **book)
+{
+        char field[30];
+        printf("Available fields to search by:\n");
+        printf("1) Name\n");
+        printf("2) Surname\n");
+        printf("3) Email\n");
+        printf("4) Phone number\n");
+        int hasField = 0;
+        while(!hasField){
+                READ_INPUT("Enter the field number by which you want to search by: ", field);
+                if(strlen(field) > 2) {
+                        printf("Unknown value. Try again\n");
+                        continue;
+                }
+                switch(field[0]){
+                case '1':
+                        hasField = 1;
+                        break;
+                case '2':
+                        hasField = 2;
+                        break;
+                case '3':
+                        hasField = 3;
+                        break;
+                case '4':
+                        hasField = 4;
+                        break;
+                default:
+                        printf("Unknown value. Try again\n");
+                        break;
+                }
+        }
+        char value[30];
+        READ_INPUT("Enter the field value: ", value);
+        struct Address *element = NULL;
+        int i = get_address_by_value(book, &element, (enum SearchField)hasField, value);
+        if(i > 0){
+                printf("%i) ", i);
+                print_single_address(element);
+        } else {
+                printf("Requested address not found. \n");
+        }
+        return 0;
 }

@@ -43,7 +43,7 @@ void print_address_book(struct Address *book)
 	}
 	int i = 1;
 	while (book != NULL) {
-		printf("%i. %s %s:\n", i, book->name, book->surname);
+		printf("#%i) %s %s:\n", i, book->name, book->surname);
 		printf("* Email: %s\n", book->email);
 		printf("* Phone: %s\n", book->phone);
 		printf("\n");

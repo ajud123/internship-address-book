@@ -23,14 +23,14 @@ struct Address *create_address_from_line(char *line)
 	email	= strtok(NULL, DELIMITER);
 	phone	= strtok(NULL, DELIMITER);
 
-        if(name == NULL)
-                return NULL;
-        if(surname == NULL)
-                return NULL;
-        if(email == NULL)
-                return NULL;
-        if(phone == NULL)
-                return NULL;
+	if (name == NULL)
+		return NULL;
+	if (surname == NULL)
+		return NULL;
+	if (email == NULL)
+		return NULL;
+	if (phone == NULL)
+		return NULL;
 	if (strlen(name) > 29)
 		return NULL;
 	if (strlen(surname) > 29)
@@ -78,7 +78,7 @@ int get_address_at_index(struct Address **list, struct Address **address, int in
 	struct Address *current = *list;
 	if (current == NULL) {
 		*address = NULL;
-		return 2;
+		return 3;
 	}
 	int i = 1;
 	while (current != NULL && i != index) {
@@ -94,6 +94,50 @@ int get_address_at_index(struct Address **list, struct Address **address, int in
 	}
 	*address = NULL;
 	return 3;
+}
+
+/*
+ * Returns the first occurence of the element that matches the provided value in the given field
+ * Returns the element index if it exists and sets *address to the found element
+ * Returns -1 if the element does not exist and sets *address to the found element
+ * Returns -2 if the address book is empty and sets *address to NULL
+ */
+int get_address_by_value(struct Address **list, struct Address **address, enum SearchField field, char *value)
+{
+	struct Address *current = *list;
+	char *location;
+	if (current == NULL) {
+                *address = NULL;
+		return -2;
+	}
+	switch (field) {
+	case NAME:
+		location = current->name;
+		break;
+	case SURNAME:
+		location = current->surname;
+		break;
+	case EMAIL:
+		location = current->email;
+		break;
+        case PHONENUMBER:
+                location = current->phone;
+                break;
+	}
+        // Pointer arithmetics
+        int offset = (void*)location - (void*)current;
+        int i = 1;
+        while(current != NULL){
+                // Cast to void* otherwise the arithmetics fail
+                if(strcmp((char *)((void*)current+offset), value) == 0){
+                        *address = current;
+                        return i;
+                }
+                current = current->next;
+                i++;
+        }
+        return -1;
+
 }
 
 void add_to_list(struct Address **list, struct Address *address)
@@ -115,8 +159,8 @@ void insert_in_list_index(struct Address **list, struct Address *address, int in
 		*list = address;
 		return;
 	}
-        if(index < 1)
-                index = 1;
+	if (index < 1)
+		index = 1;
 	if (index == 1) {
 		address->next = current;
 		*list	      = address;
@@ -142,12 +186,12 @@ int remove_at_list_index(struct Address **list, int index)
 	if (current == NULL) {
 		return 1;
 	}
-        if(index == 1){
-                struct Address *next = current->next;
-                free(*list);
-                *list = next;
-                return 0;
-        }
+	if (index == 1) {
+		struct Address *next = current->next;
+		free(*list);
+		*list = next;
+		return 0;
+	}
 	int i = 1;
 	while (current->next != NULL && i < index - 1) {
 		current = current->next;
@@ -164,10 +208,10 @@ int remove_at_list_index(struct Address **list, int index)
 
 void delete_list(struct Address **list)
 {
-        struct Address *next;
-        while(*list != NULL){
-                next = (*list)->next;
-                free(*list);
-                *list = next;
-        }
+	struct Address *next;
+	while (*list != NULL) {
+		next = (*list)->next;
+		free(*list);
+		*list = next;
+	}
 }

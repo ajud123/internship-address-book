@@ -31,7 +31,7 @@ All of your code must be stored in a gitlab repository. Also, you can use other 
 The user must be provided with an interactive menu which will be used for the user to interact with the program and execute different actions. 
 
 ## Running
-Execute `build.sh` script to generate the address book executable, then run generated binary in the generated `bin` folder.
+Execute `make` and run the generated binary `address_book`.
 
 ## Notes
 The indexing for the linked list methods starts from 1, simply quicker to associate the user-displayed value in the program.

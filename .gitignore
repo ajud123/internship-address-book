@@ -1,2 +1,4 @@
 .vscode/*
 bin/*
+build/*
+address_book

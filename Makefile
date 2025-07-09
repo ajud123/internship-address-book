@@ -1,24 +1,19 @@
-CC = gcc
-CFLAGS += -g -Wall -Wextra -Werror -I./lib
-LDLIBS += -llinkedlist
-LDFLAGS += -L./
-
 SRC_DIR := ./src
 LIB_DIR := ./lib
 BUILD_DIR := ./build
 
-SRCS := ${shell find $(SRC_DIR) -name '*.c'}
-OBJS := ${SRCS:%=$(BUILD_DIR)/%.o}
+.PHONY: install uninstall all clean src lib
 
-LIB_SRCS := ${shell find $(LIB_DIR) -name '*.c'}
-LIB_OBJS := ${LIB_SRCS:%=$(BUILD_DIR)/%.o}
+all: lib src address_book
 
-.PHONY: install uninstall all clean
+lib:
+	$(MAKE) -C $(LIB_DIR)
 
-all: address_book liblinkedlist.so $(OBJS)
+src: lib
+	$(MAKE) -C $(SRC_DIR)
 
-liblinkedlist.so: $(LIB_OBJS)
-	$(CC) $(LIB_OBJS) -shared -o $@ 
+address_book: lib src
+	cp $(SRC_DIR)/address_book ./
 
 install: liblinkedlist.so
 	@echo Installing requires sudo permissions
@@ -31,17 +26,7 @@ uninstall:
 	rm /usr/lib/liblinkedlist.so
 	ldconfig
 
-address_book: liblinkedlist.so $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LDFLAGS) $(LDLIBS)
-
-$(OBJS): $(SRCS)
-	cd $(SRC_DIR); make
-
-$(LIB_OBJS): $(LIB_SRCS)
-	cd $(LIB_DIR); make
-
 clean:
+	$(MAKE) -C $(SRC_DIR) clean
+	$(MAKE) -C $(LIB_DIR) clean
 	$(RM) -r $(BUILD_DIR) address_book liblinkedlist.so
-
-test:
-	echo $(OBJS)

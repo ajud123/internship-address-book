@@ -1,5 +1,4 @@
 #include "linkedlist.h"
-#include "options.h"
 #include <string.h>
 #include <stdlib.h>
 

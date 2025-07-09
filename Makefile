@@ -15,7 +15,7 @@ LIB_OBJS := ${LIB_SRCS:%=$(BUILD_DIR)/%.o}
 
 .PHONY: install uninstall all clean
 
-all: address_book install liblinkedlist.so $(OBJS)
+all: address_book liblinkedlist.so $(OBJS)
 
 liblinkedlist.so: $(LIB_OBJS)
 	$(CC) $(LIB_OBJS) -shared -o $@ 

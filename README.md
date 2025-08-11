@@ -1,4 +1,19 @@
-# Part 3 Address book
+# Address book
+
+This is a program that demonstrates the use of linked lists within a simple address book program. It doesn't take in any commandline parameters and stores all the addresses in `addresses.csv` that resiedes in the user's home directory. Currently supported features:
+* Displaying all records in the address book
+* Adding an address to the end of the book
+* Inserting an address to the book at a position
+* Deleting an address from the book at a position
+* Clearing the entire address book
+* Finding an address by a given index
+* Finding an address by the name, surname, email or phone number.
+
+## Running
+Execute `make` and run the generated binary `address_book`.
+
+## Notes
+The indexing for the linked list methods starts from 1, simply quicker to associate the user-displayed value in the program.
 
 ## Task
 In this task you will need to create a simple address book using single linked list. You will need to use C programming language. 
@@ -29,9 +44,3 @@ All linked list code part must be stored in a separate .c file.
 All of your code must be stored in a gitlab repository. Also, you can use other git services provider. 
 
 The user must be provided with an interactive menu which will be used for the user to interact with the program and execute different actions. 
-
-## Running
-Execute `make` and run the generated binary `address_book`.
-
-## Notes
-The indexing for the linked list methods starts from 1, simply quicker to associate the user-displayed value in the program.
